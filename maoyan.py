@@ -21,43 +21,51 @@ def get_one_page(url):
 def parse_one_page(html):
     soup = BeautifulSoup(html,'lxml')
     items = soup.find_all('dd')
-    info=[]
+#    info=[]
     for item in items:        
-#        yield {
-#            'movie_name' :item.find('p',class_='name').a['title'],
-#            'star':item.find('p',class_='star').text.strip()[3:],
-#            'release_time':item.find('p',class_='releasetime').text[5:],
-#            'store':item.find('p',class_='score').find('i',class_='integer').text+'.'+item.find('p',class_='score').find('i',class_='fraction').text          
-#                }
-        item_info=[]
-        movie_name=item.find('p',class_='name').a['title']        
-        star=item.find('p',class_='star').text.strip()[3:]
-        release_time=item.find('p',class_='releasetime').text[5:]
-        score=item.find('p',class_='score').find('i',class_='integer').text+'.'+item.find('p',class_='score').find('i',class_='fraction').text      
-        item_info.append('movie_name:'+movie_name)
-        item_info.append('star:'+star)
-        item_info.append('release_time:'+release_time)
-        item_info.append('score:'+score)
-        info.append(item_info)
-    return info
+        yield {
+            'movie_name' :item.find('p',class_='name').a['title'],
+            'star':item.find('p',class_='star').text.strip()[3:],
+            'release_time':item.find('p',class_='releasetime').text[5:],
+            'store':item.find('p',class_='score').find('i',class_='integer').text+item.find('p',class_='score').find('i',class_='fraction').text          
+                }
+#        item_info=[]
+#        movie_name=item.find('p',class_='name').a['title']        
+#        star=item.find('p',class_='star').text.strip()[3:]
+#        release_time=item.find('p',class_='releasetime').text[5:]
+#        score=item.find('p',class_='score').find('i',class_='integer').text+'.'+item.find('p',class_='score').find('i',class_='fraction').text      
+#        item_info.append('movie_name:'+movie_name)
+#        item_info.append('star:'+star)
+#        item_info.append('release_time:'+release_time)
+#        item_info.append('score:'+score)
+#        info.append(item_info)
+#    return info
         
         
 
 
 def write_into_file(content):
-    with open('/home/python/maoyanmovie/result.txt','a') as f:
-        f.write((str(content)) + '\n')
+    with open('/home/python/maoyanmovie/result.txt','a',encoding = 'utf-8') as f:
+        f.write((json.dumps(content,ensure_ascii=False)) + '\n')
         f.close()
+
+#def cube(n):
+#    for in in range(n):
+#        yield i**3
+#for i in cube(5):
+#    print (i)
+    
+
 
 def main():
     url = "http://maoyan.com/board/4?offset=0"
     html = get_one_page(url)
-    movies = parse_one_page(html)
-#    write_into_file(movies)
-    print(movies)
+    for movie in parse_one_page(html):
+#        print(type(parse_one_page(html)))
+        write_into_file(movie)
 
  
-    
+ 
     
 if __name__=="__main__":
     main()
